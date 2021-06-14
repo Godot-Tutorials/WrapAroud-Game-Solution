@@ -1,5 +1,20 @@
 extends Sprite
 
+"""
+
+Thank you Yas Meteora for seeing the problems with the original code where
+the code would not move left when max speed to the right was maxed out.
+Also, issue with if checks on accelerationOnX() & accelerationOnY() not 
+working when moving to the left or up.
+
+Code better reflects getting the code to work.
+
+Quesiton to ask yourself when looking at the code:
+'Do we need an if statement on accelerationOnX() & accelerationOnY() methods
+when their is a method called clampSpeed() that "clamps" the speed values within a range?'
+
+"""
+
 var gameWidth: int = OS.get_window_size().x
 var gameHeight: int = OS.get_window_size().y
 var spriteWidth: int = get_texture().get_width()
@@ -34,6 +49,7 @@ func _physics_process(delta: float) -> void:
 		moveDown(delta)
 	
 	moveHero(delta)
+	clampSpeed()
 	wrapAroundCheck()
 
 func wrapAroundCheck()->void:
@@ -58,16 +74,16 @@ func moveUp(delta: float) -> void:
 func moveDown(delta: float) -> void:
 	accelerationOnY(delta)
 
-# added abs() method
+# added abs() method, abs() keeps positive numbers positive, and turns negative numbers positive
 # Yas Meteora pointed out that their was no abs() method!
 func accelerationOnX(delta: float) -> void:
-	if abs(speedOnXAxis) < maxSpeed:
+	if abs(speedOnXAxis) <= maxSpeed:
 		speedOnXAxis += acceleration * delta
 
-# added abs()
+# added abs() method, abs() keeps positive numbers positive, and turns negative numbers positive
 # Yas Meteora pointed out that their was no abs() method!
 func accelerationOnY(delta: float) -> void:
-	if abs(speedOnYAxis) < maxSpeed:
+	if abs(speedOnYAxis) <= maxSpeed:
 		speedOnYAxis += acceleration * delta
 
 func moveHero(delta: float)->void:
@@ -79,3 +95,22 @@ func moveHero(delta: float)->void:
 func positionMiddle() -> void:
 	self.position.x = gameWidth / 2
 	self.position.y = gameHeight / 2
+
+
+#issue with float going above maxSpeed or below -maxSpeed by one hundred-thousandth (0.00001)
+func clampSpeed() -> void:
+	# you can use the clamp method to keep a value within a range
+	# speedOnXAxis = clamp(speedOnXAxis, -maxSpeed, maxSpeed)
+	# speedOnYAxis = clamp(speedOnYAxis, -maxSpeed, maxSpeed)
+	
+	# check X speed
+	if speedOnXAxis > maxSpeed:
+		speedOnXAxis = maxSpeed
+	if speedOnXAxis < -maxSpeed:
+		speedOnXAxis = -maxSpeed
+	
+	# check Y speed
+	if speedOnYAxis > maxSpeed:
+		speedOnYAxis = maxSpeed
+	if speedOnYAxis < -maxSpeed:
+		speedOnYAxis = -maxSpeed
