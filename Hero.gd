@@ -58,12 +58,16 @@ func moveUp(delta: float) -> void:
 func moveDown(delta: float) -> void:
 	accelerationOnY(delta)
 
+# added abs() method
+# Yas Meteora pointed out that their was no abs() method!
 func accelerationOnX(delta: float) -> void:
-	if speedOnXAxis < maxSpeed:
+	if abs(speedOnXAxis) < maxSpeed:
 		speedOnXAxis += acceleration * delta
 
+# added abs()
+# Yas Meteora pointed out that their was no abs() method!
 func accelerationOnY(delta: float) -> void:
-	if speedOnYAxis < maxSpeed:
+	if abs(speedOnYAxis) < maxSpeed:
 		speedOnYAxis += acceleration * delta
 
 func moveHero(delta: float)->void:
